@@ -22,7 +22,11 @@ const passSchema = new mongoose.Schema(
         type: String,
         enum: ["active", "expired"],
         default: "active"
-    }
+    },
+    isUsed: {
+    type: Boolean,
+    default: false
+}
 },
 {
     timestamps: true
