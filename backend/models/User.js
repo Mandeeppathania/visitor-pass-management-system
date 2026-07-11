@@ -18,11 +18,11 @@ const userSchema = new mongoose.Schema(
         required: true
     },
 
-    role: {
-        type: String,
-        enum: ["Admin", "Employee", "Security"],
-        default: "Employee"
-    },
+   role:{
+   type:String,
+   enum:["admin","employee","security"],
+   default:"employee"
+},
 
     phone: {
         type: String
