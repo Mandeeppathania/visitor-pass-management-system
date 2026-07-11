@@ -3,13 +3,15 @@ const jwt = require("jsonwebtoken");
 // Check if user is logged in
 const protect = (req, res, next) => {
 
-    const token = req.headers.authorization;
+    const authHeader = req.headers.authorization;
 
-    if (!token) {
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
         return res.status(401).json({
             message: "Access Denied"
         });
     }
+
+    const token = authHeader.split(" ")[1];
 
     try {
 
@@ -21,7 +23,7 @@ const protect = (req, res, next) => {
 
     } catch (error) {
 
-        res.status(401).json({
+        return res.status(401).json({
             message: "Invalid Token"
         });
 
