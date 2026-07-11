@@ -6,7 +6,8 @@ const {
     registerVisitor,
     getVisitors,
     getVisitorById,
-    updateVisitor
+    updateVisitor,
+    deleteVisitor
 } = require("../controllers/visitorController");
 
 const protect = require("../middleware/authMiddleware");
@@ -20,5 +21,7 @@ router.get("/", protect, getVisitors);
 router.get("/:id", protect, getVisitorById);
 //Update visitor
 router.put("/:id", protect, updateVisitor);
+//Delete visitor
+router.delete("/:id", protect, deleteVisitor);
 
 module.exports = router;

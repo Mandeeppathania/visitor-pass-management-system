@@ -104,10 +104,39 @@ const updateVisitor = async (req, res) => {
     }
 
 };
+// Delete Visitor
+const deleteVisitor = async (req, res) => {
+
+    try {
+
+        const visitor = await Visitor.findByIdAndDelete(req.params.id);
+
+        if (!visitor) {
+
+            return res.status(404).json({
+                message: "Visitor not found"
+            });
+
+        }
+
+        res.status(200).json({
+            message: "Visitor Deleted Successfully"
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+            message: error.message
+        });
+
+    }
+
+};
 
 module.exports = {
     registerVisitor,
     getVisitors,
     getVisitorById,
-    updateVisitor
+    updateVisitor,
+    deleteVisitor
 };
