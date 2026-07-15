@@ -26,6 +26,10 @@ const passSchema = new mongoose.Schema(
     isUsed: {
     type: Boolean,
     default: false
+},
+validTill: {
+    type: Date,
+    required: true
 }
 },
 {

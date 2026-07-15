@@ -14,6 +14,11 @@ const checkLogSchema = new mongoose.Schema(
 
     checkOut: {
         type: Date
+    },
+
+    checkedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
     }
 },
 {

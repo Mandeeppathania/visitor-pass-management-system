@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
-const appointmentSchema = new mongoose.Schema(
-{
+const appointmentSchema = new mongoose.Schema({
+
     visitor: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Visitor",
@@ -19,6 +19,11 @@ const appointmentSchema = new mongoose.Schema(
         required: true
     },
 
+    visitTime: {
+        type: String,
+        required: true
+    },
+
     purpose: {
         type: String,
         required: true
@@ -28,11 +33,14 @@ const appointmentSchema = new mongoose.Schema(
         type: String,
         enum: ["pending", "approved", "rejected"],
         default: "pending"
-    }
-},
-{
-    timestamps: true
+    },
+    remarks: {
+    type: String,
+    trim: true
 }
-);
+
+}, {
+    timestamps: true
+});
 
 module.exports = mongoose.model("Appointment", appointmentSchema);
