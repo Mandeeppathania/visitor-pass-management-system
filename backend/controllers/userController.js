@@ -1,7 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 
-// Create Employee
+// Create Employee / Security
 const createUser = async (req, res) => {
 
     try {
@@ -24,6 +24,13 @@ const createUser = async (req, res) => {
             });
         }
 
+        // Only employee and security can be created
+        if (!["employee", "security"].includes(role)) {
+            return res.status(400).json({
+                message: "Role must be employee or security"
+            });
+        }
+
         // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -37,9 +44,12 @@ const createUser = async (req, res) => {
             department
         });
 
+        // Don't send password back
+        const createdUser = await User.findById(user._id).select("-password");
+
         return res.status(201).json({
             message: "User Created Successfully",
-            user
+            user: createdUser
         });
 
     } catch (error) {
@@ -52,6 +62,29 @@ const createUser = async (req, res) => {
 
 };
 
+// Get all employees
+const getEmployees = async (req, res) => {
+
+    try {
+
+        const employees = await User.find({
+            role: "employee",
+            isActive: true
+        }).select("name department email");
+
+        return res.status(200).json(employees);
+
+    } catch (error) {
+
+        return res.status(500).json({
+            message: error.message
+        });
+
+    }
+
+};
+
 module.exports = {
-    createUser
+    createUser,
+    getEmployees
 };

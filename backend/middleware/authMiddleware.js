@@ -1,33 +1,34 @@
-const authHeader = req.headers.authorization;
+const jwt = require("jsonwebtoken");
 
-console.log("Authorization Header:", authHeader);
+// Check if user is logged in
+const protect = (req, res, next) => {
 
-if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({
-        message: "Access Denied"
-    });
-}
+    const authHeader = req.headers.authorization;
 
-const token = authHeader.split(" ")[1];
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        return res.status(401).json({
+            message: "Access Denied"
+        });
+    }
 
-console.log("Token:", token);
+    const token = authHeader.split(" ")[1];
 
-try {
+    try {
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    console.log("Decoded:", decoded);
+        req.user = decoded;
 
-    req.user = decoded;
+        next();
 
-    next();
+    } catch (error) {
 
-} catch (error) {
+        return res.status(401).json({
+            message: "Invalid Token"
+        });
 
-    console.log(error);
+    }
 
-    return res.status(401).json({
-        message: error.message
-    });
+};
 
-}
+module.exports = protect;

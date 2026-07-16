@@ -1,27 +1,43 @@
 const Visitor = require("../models/Visitor");
+const Appointment = require("../models/Appointment");
+const User = require("../models/User");
 
 // Register Visitor
 const registerVisitor = async (req, res) => {
 
     try {
 
-        const { name, email, phone, company } = req.body;
-
-        const visitor = await Visitor.create({
+        const {
             name,
             email,
             phone,
-            company
-        });
+            company,
+            photo
+        } = req.body;
 
-        res.status(201).json({
+        // Check if visitor already exists
+        let visitor = await Visitor.findOne({ email });
+
+        if (!visitor) {
+
+            visitor = await Visitor.create({
+                name,
+                email,
+                phone,
+                company,
+                photo
+            });
+
+        }
+
+        return res.status(201).json({
             message: "Visitor Registered Successfully",
             visitor
         });
 
     } catch (error) {
 
-        res.status(500).json({
+        return res.status(500).json({
             message: error.message
         });
 

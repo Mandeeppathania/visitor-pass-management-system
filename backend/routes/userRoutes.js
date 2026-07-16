@@ -6,15 +6,22 @@ const protect = require("../middleware/authMiddleware");
 const checkRole = require("../middleware/roleMiddleware");
 
 const {
-    createUser
+    createUser,
+    getEmployees
 } = require("../controllers/userController");
 
-// Only Admin can create users
+// Admin creates users
 router.post(
-    "/",
+    "/create",
     protect,
     checkRole("admin"),
     createUser
+);
+
+// Public - Employee list for visitor form
+router.get(
+    "/employees",
+    getEmployees
 );
 
 module.exports = router;
