@@ -13,9 +13,9 @@ const checkLogSchema = new mongoose.Schema(
     },
 
     checkOut: {
-        type: Date
-    },
-
+    type: Date,
+    default: null
+},
     checkedBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
