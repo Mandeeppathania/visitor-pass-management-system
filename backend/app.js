@@ -6,6 +6,7 @@ const visitorRoutes = require("./routes/visitorRoutes");
 const appointmentRoutes = require("./routes/appointmentRoutes");
 const userRoutes = require("./routes/userRoutes");
 const passRoutes = require("./routes/passRoutes");
+const checkLogRoutes = require("./routes/checkLogRoutes");
 
 const app = express();
 
@@ -24,5 +25,6 @@ app.use("/api/visitors", visitorRoutes);
 app.use("/api/appointments", appointmentRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/passes", passRoutes);
+app.use("/api/checklogs", checkLogRoutes);
 
 module.exports = app;

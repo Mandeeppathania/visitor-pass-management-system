@@ -1,6 +1,7 @@
 const Appointment = require("../models/Appointment");
 const generateQRCode = require("../utils/qrGenerator");
 const Pass = require("../models/Pass");
+const generatePDF = require("../utils/pdfGenerator");
 
 // Generate Pass
 const generatePass = async (req, res) => {
@@ -59,6 +60,14 @@ const pass = await Pass.create({
     pdf: ""
 
 });
+const pdfPath = await generatePDF(
+    appointment,
+    pass
+);
+
+pass.pdf = pdfPath;
+
+await pass.save();
 
         return res.status(201).json({
 
