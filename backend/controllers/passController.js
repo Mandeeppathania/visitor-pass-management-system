@@ -1,17 +1,20 @@
 const Appointment = require("../models/Appointment");
-const generateQRCode = require("../utils/qrGenerator");
 const Pass = require("../models/Pass");
+
+const path = require("path");
+
+const generateQRCode = require("../utils/qrGenerator");
 const generatePDF = require("../utils/pdfGenerator");
+const sendVisitorPass = require("../services/emailService");
 
 // Generate Pass
 const generatePass = async (req, res) => {
 
     try {
 
-        // Get appointment id
         const { appointmentId } = req.params;
 
-        // Find appointment
+        // Find Appointment
         const appointment = await Appointment.findById(appointmentId)
             .populate("visitor")
             .populate("host");
@@ -31,7 +34,7 @@ const generatePass = async (req, res) => {
 
         // Check if pass already exists
         const existingPass = await Pass.findOne({
-            appointment: appointmentId
+            appointment: appointment._id
         });
 
         if (existingPass) {
@@ -41,33 +44,48 @@ const generatePass = async (req, res) => {
         }
 
         // Generate Pass Number
-        const count = await Pass.countDocuments();
+        const totalPasses = await Pass.countDocuments();
 
-        const passNumber =
-            `VP-2026-${String(count + 1).padStart(3, "0")}`;
+        const year = new Date().getFullYear();
+const passNumber = `VP-${year}-${String(totalPasses + 1).padStart(3, "0")}`;
 
-        // Create pass
+        // Generate QR Code
         const qrPath = await generateQRCode(passNumber);
 
-const pass = await Pass.create({
+        // Create Pass
+        const pass = await Pass.create({
 
-    appointment: appointment._id,
+            appointment: appointment._id,
 
-    passNumber,
+            passNumber,
 
-    qrCode: qrPath,
+            qrCode: qrPath,
 
-    pdf: ""
+            pdf: ""
 
-});
-const pdfPath = await generatePDF(
-    appointment,
-    pass
-);
+        });
 
-pass.pdf = pdfPath;
+        // Generate PDF
+        const pdfPath = await generatePDF(
+            appointment,
+            pass
+        );
 
-await pass.save();
+        // Save PDF path
+        pass.pdf = pdfPath;
+
+        await pass.save();
+
+        // Send Email
+        await sendVisitorPass(
+
+            appointment.visitor.email,
+
+            appointment.visitor.name,
+
+            path.join(__dirname, "..", pdfPath)
+
+        );
 
         return res.status(201).json({
 
