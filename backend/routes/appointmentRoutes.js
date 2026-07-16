@@ -9,11 +9,9 @@ const checkRole = require("../middleware/roleMiddleware");
 const {
 
     createAppointment,
-
     getAppointments,
-
+    getPendingAppointments,
     approveAppointment,
-
     rejectAppointment
 
 } = require("../controllers/appointmentController");
@@ -37,5 +35,11 @@ router.put(
     checkRole("employee", "admin"),
     rejectAppointment
 );
-
+// View Pending Appointments
+router.get(
+    "/pending",
+    protect,
+    checkRole("employee", "admin"),
+    getPendingAppointments
+);
 module.exports = router;

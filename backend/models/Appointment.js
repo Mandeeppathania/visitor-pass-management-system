@@ -34,10 +34,12 @@ const appointmentSchema = new mongoose.Schema({
         enum: ["pending", "approved", "rejected"],
         default: "pending"
     },
+
+    // Reason if appointment is rejected
     remarks: {
-    type: String,
-    trim: true
-}
+        type: String,
+        default: ""
+    }
 
 }, {
     timestamps: true

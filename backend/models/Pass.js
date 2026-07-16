@@ -18,19 +18,21 @@ const passSchema = new mongoose.Schema(
         type: String
     },
 
+    pdf: {
+        type: String
+    },
+
     status: {
         type: String,
         enum: ["active", "expired"],
         default: "active"
     },
+
     isUsed: {
-    type: Boolean,
-    default: false
-},
-validTill: {
-    type: Date,
-    required: true
-}
+        type: Boolean,
+        default: false
+    }
+
 },
 {
     timestamps: true

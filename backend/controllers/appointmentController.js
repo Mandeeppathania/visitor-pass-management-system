@@ -24,12 +24,16 @@ const createAppointment = async (req, res) => {
             });
         }
 
-        // Check if host (employee) exists
-        const hostExists = await User.findById(host);
+        // Check if selected host is an active employee
+        const hostExists = await User.findOne({
+            _id: host,
+            role: "employee",
+            isActive: true
+        });
 
         if (!hostExists) {
             return res.status(404).json({
-                message: "Host not found"
+                message: "Employee not found"
             });
         }
 
@@ -56,7 +60,8 @@ const createAppointment = async (req, res) => {
     }
 
 };
-// Get all appointments
+
+// Get All Appointments
 const getAppointments = async (req, res) => {
 
     try {
@@ -76,7 +81,31 @@ const getAppointments = async (req, res) => {
     }
 
 };
-// Approve appointment
+
+// Get Pending Appointments
+const getPendingAppointments = async (req, res) => {
+
+    try {
+
+        const appointments = await Appointment.find({
+            status: "pending"
+        })
+            .populate("visitor", "name email phone company")
+            .populate("host", "name department email");
+
+        return res.status(200).json(appointments);
+
+    } catch (error) {
+
+        return res.status(500).json({
+            message: error.message
+        });
+
+    }
+
+};
+
+// Approve Appointment
 const approveAppointment = async (req, res) => {
 
     try {
@@ -84,11 +113,15 @@ const approveAppointment = async (req, res) => {
         const appointment = await Appointment.findById(req.params.id);
 
         if (!appointment) {
-
             return res.status(404).json({
                 message: "Appointment not found"
             });
+        }
 
+        if (appointment.status === "approved") {
+            return res.status(400).json({
+                message: "Appointment already approved"
+            });
         }
 
         appointment.status = "approved";
@@ -96,7 +129,7 @@ const approveAppointment = async (req, res) => {
         await appointment.save();
 
         return res.status(200).json({
-            message: "Appointment Approved",
+            message: "Appointment Approved Successfully",
             appointment
         });
 
@@ -109,7 +142,8 @@ const approveAppointment = async (req, res) => {
     }
 
 };
-// Reject appointment
+
+// Reject Appointment
 const rejectAppointment = async (req, res) => {
 
     try {
@@ -117,21 +151,26 @@ const rejectAppointment = async (req, res) => {
         const appointment = await Appointment.findById(req.params.id);
 
         if (!appointment) {
-
             return res.status(404).json({
                 message: "Appointment not found"
             });
+        }
 
+        if (appointment.status === "rejected") {
+            return res.status(400).json({
+                message: "Appointment already rejected"
+            });
         }
 
         appointment.status = "rejected";
 
-        appointment.remarks = req.body.remarks;
+        // Save rejection reason
+        appointment.remarks = req.body.remarks || "No reason provided";
 
         await appointment.save();
 
         return res.status(200).json({
-            message: "Appointment Rejected",
+            message: "Appointment Rejected Successfully",
             appointment
         });
 
@@ -148,6 +187,7 @@ const rejectAppointment = async (req, res) => {
 module.exports = {
     createAppointment,
     getAppointments,
+    getPendingAppointments,
     approveAppointment,
     rejectAppointment
 };
