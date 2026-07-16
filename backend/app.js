@@ -5,6 +5,7 @@ const authRoutes = require("./routes/authRoutes");
 const visitorRoutes = require("./routes/visitorRoutes");
 const appointmentRoutes = require("./routes/appointmentRoutes");
 const userRoutes = require("./routes/userRoutes");
+const passRoutes = require("./routes/passRoutes");
 
 const app = express();
 
@@ -22,5 +23,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/visitors", visitorRoutes);
 app.use("/api/appointments", appointmentRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/passes", passRoutes);
 
 module.exports = app;

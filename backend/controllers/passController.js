@@ -1,4 +1,5 @@
 const Appointment = require("../models/Appointment");
+const generateQRCode = require("../utils/qrGenerator");
 const Pass = require("../models/Pass");
 
 // Generate Pass
@@ -45,17 +46,19 @@ const generatePass = async (req, res) => {
             `VP-2026-${String(count + 1).padStart(3, "0")}`;
 
         // Create pass
-        const pass = await Pass.create({
+        const qrPath = await generateQRCode(passNumber);
 
-            appointment: appointment._id,
+const pass = await Pass.create({
 
-            passNumber,
+    appointment: appointment._id,
 
-            qrCode: "",
+    passNumber,
 
-            pdf: ""
+    qrCode: qrPath,
 
-        });
+    pdf: ""
+
+});
 
         return res.status(201).json({
 
