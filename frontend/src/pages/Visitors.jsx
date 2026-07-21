@@ -2,11 +2,17 @@ import { useEffect, useState } from "react";
 import DashboardLayout from "../layouts/DashboardLayout";
 import api from "../services/api";
 
+import AddVisitor from "../components/AddVisitor";
+import Modal from "../components/Modal";
+
 const Visitors = () => {
 
     const [visitors, setVisitors] = useState([]);
-
     const [loading, setLoading] = useState(true);
+
+    const [open, setOpen] = useState(false);
+
+    const [selectedVisitor, setSelectedVisitor] = useState(null);
 
     useEffect(() => {
 
@@ -34,15 +40,87 @@ const Visitors = () => {
 
     };
 
+    const deleteVisitor = async (id) => {
+
+        if (!window.confirm("Delete this visitor?")) return;
+
+        try {
+
+            await api.delete(`/visitors/${id}`);
+
+            fetchVisitors();
+
+        } catch (error) {
+
+            alert(error.response?.data?.message);
+
+        }
+
+    };
+
+    const openAddModal = () => {
+
+        setSelectedVisitor(null);
+
+        setOpen(true);
+
+    };
+
+    const openEditModal = (visitor) => {
+
+        setSelectedVisitor(visitor);
+
+        setOpen(true);
+
+    };
+
     return (
 
         <DashboardLayout>
 
-            <h1>Visitors</h1>
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginBottom: "20px"
+                }}
+            >
+
+                <h1>Visitors</h1>
+
+                <button onClick={openAddModal}>
+
+                    + Add Visitor
+
+                </button>
+
+            </div>
+
+            <Modal
+                isOpen={open}
+                onClose={() => setOpen(false)}
+                title={
+                    selectedVisitor
+                        ? "Edit Visitor"
+                        : "Add Visitor"
+                }
+            >
+
+                <AddVisitor
+
+                    visitor={selectedVisitor}
+
+                    fetchVisitors={fetchVisitors}
+
+                    onClose={() => setOpen(false)}
+
+                />
+
+            </Modal>
 
             {loading ? (
 
-                <h3>Loading...</h3>
+                <h2>Loading...</h2>
 
             ) : (
 
@@ -50,8 +128,8 @@ const Visitors = () => {
                     border="1"
                     cellPadding="10"
                     style={{
-                        marginTop: "20px",
-                        width: "100%"
+                        width: "100%",
+                        borderCollapse: "collapse"
                     }}
                 >
 
@@ -60,12 +138,10 @@ const Visitors = () => {
                         <tr>
 
                             <th>Name</th>
-
                             <th>Email</th>
-
                             <th>Phone</th>
-
                             <th>Company</th>
+                            <th>Actions</th>
 
                         </tr>
 
@@ -84,6 +160,28 @@ const Visitors = () => {
                                 <td>{visitor.phone}</td>
 
                                 <td>{visitor.company}</td>
+
+                                <td>
+
+                                    <button
+                                        onClick={() =>
+                                            openEditModal(visitor)
+                                        }
+                                    >
+                                        Edit
+                                    </button>
+
+                                    {" "}
+
+                                    <button
+                                        onClick={() =>
+                                            deleteVisitor(visitor._id)
+                                        }
+                                    >
+                                        Delete
+                                    </button>
+
+                                </td>
 
                             </tr>
 

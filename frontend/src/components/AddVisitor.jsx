@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import api from "../services/api";
 
-const AddVisitor = ({ fetchVisitors }) => {
+const AddVisitor = ({ fetchVisitors, onClose, visitor }) => {
 
     const [form, setForm] = useState({
         name: "",
@@ -9,6 +9,21 @@ const AddVisitor = ({ fetchVisitors }) => {
         phone: "",
         company: ""
     });
+
+    useEffect(() => {
+
+        if (visitor) {
+
+            setForm({
+                name: visitor.name,
+                email: visitor.email,
+                phone: visitor.phone,
+                company: visitor.company
+            });
+
+        }
+
+    }, [visitor]);
 
     const handleChange = (e) => {
 
@@ -25,9 +40,19 @@ const AddVisitor = ({ fetchVisitors }) => {
 
         try {
 
-            await api.post("/visitors", form);
+            if (visitor) {
 
-            alert("Visitor Added Successfully");
+                await api.put(`/visitors/${visitor._id}`, form);
+
+                alert("Visitor Updated Successfully");
+
+            } else {
+
+                await api.post("/visitors/register", form);
+
+                alert("Visitor Added Successfully");
+
+            }
 
             setForm({
                 name: "",
@@ -38,9 +63,11 @@ const AddVisitor = ({ fetchVisitors }) => {
 
             fetchVisitors();
 
+            onClose();
+
         } catch (error) {
 
-            alert(error.response?.data?.message || "Error");
+            alert(error.response?.data?.message || "Operation Failed");
 
         }
 
@@ -51,10 +78,9 @@ const AddVisitor = ({ fetchVisitors }) => {
         <form
             onSubmit={handleSubmit}
             style={{
-                marginBottom: "30px",
                 display: "flex",
-                gap: "10px",
-                flexWrap: "wrap"
+                flexDirection: "column",
+                gap: "15px"
             }}
         >
 
@@ -91,7 +117,9 @@ const AddVisitor = ({ fetchVisitors }) => {
             />
 
             <button type="submit">
-                Add Visitor
+
+                {visitor ? "Update Visitor" : "Add Visitor"}
+
             </button>
 
         </form>

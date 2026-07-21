@@ -6,13 +6,25 @@ const protect = require("../middleware/authMiddleware");
 
 const {
     registerVisitor,
-    getVisitors
+    getVisitors,
+    getVisitorById,
+    updateVisitor,
+    deleteVisitor
 } = require("../controllers/visitorController");
 
-// Public Route
+// Register Visitor
 router.post("/register", registerVisitor);
 
-// Protected Route
+// Get All Visitors
 router.get("/", protect, getVisitors);
+
+// Get Single Visitor
+router.get("/:id", protect, getVisitorById);
+
+// Update Visitor
+router.put("/:id", protect, updateVisitor);
+
+// Delete Visitor
+router.delete("/:id", protect, deleteVisitor);
 
 module.exports = router;
