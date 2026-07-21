@@ -56,6 +56,11 @@ const Sidebar = () => {
                         Check In / Out
                     </Link>
                 )}
+                {
+    user.role === "admin" && (
+        <Link to="/employees">Employees</Link>
+    )
+}
 
             </nav>
 

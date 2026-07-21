@@ -7,7 +7,8 @@ const checkRole = require("../middleware/roleMiddleware");
 
 const {
     createUser,
-    getEmployees
+    getEmployees,
+    getUsers
 } = require("../controllers/userController");
 
 // Admin creates users
@@ -23,5 +24,11 @@ router.get(
     "/employees",
     getEmployees
 );
-
+// Admin - Get all users
+router.get(
+    "/",
+    protect,
+    checkRole("admin"),
+    getUsers
+);
 module.exports = router;
