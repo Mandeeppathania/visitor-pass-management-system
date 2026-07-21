@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
+import DashboardLayout from "../layouts/DashboardLayout";
 
 const Dashboard = () => {
 
-    const [stats, setStats] = useState(null);
-
+    const [stats, setStats] = useState({});
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -35,70 +35,41 @@ const Dashboard = () => {
 
     if (loading) {
 
-        return <h2>Loading Dashboard...</h2>;
+        return (
+            <DashboardLayout>
+                <h2>Loading...</h2>
+            </DashboardLayout>
+        );
 
     }
 
     return (
 
-        <div style={{ padding: "30px" }}>
+        <DashboardLayout>
 
-            <h1>Visitor Pass Management Dashboard</h1>
-
-            <hr />
+            <h1>Dashboard</h1>
 
             <div
                 style={{
                     display: "grid",
-                    gridTemplateColumns: "repeat(4,1fr)",
+                    gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
                     gap: "20px",
                     marginTop: "30px"
                 }}
             >
 
-                <Card
-                    title="Total Visitors"
-                    value={stats.totalVisitors}
-                />
-
-                <Card
-                    title="Employees"
-                    value={stats.totalEmployees}
-                />
-
-                <Card
-                    title="Pending"
-                    value={stats.pendingAppointments}
-                />
-
-                <Card
-                    title="Approved"
-                    value={stats.approvedAppointments}
-                />
-
-                <Card
-                    title="Rejected"
-                    value={stats.rejectedAppointments}
-                />
-
-                <Card
-                    title="Active Passes"
-                    value={stats.activePasses}
-                />
-
-                <Card
-                    title="Expired Passes"
-                    value={stats.expiredPasses}
-                />
-
-                <Card
-                    title="Checked In"
-                    value={stats.checkedInVisitors}
-                />
+                <Card title="Visitors" value={stats.totalVisitors} />
+                <Card title="Employees" value={stats.totalEmployees} />
+                <Card title="Pending" value={stats.pendingAppointments} />
+                <Card title="Approved" value={stats.approvedAppointments} />
+                <Card title="Rejected" value={stats.rejectedAppointments} />
+                <Card title="Active Passes" value={stats.activePasses} />
+                <Card title="Expired Passes" value={stats.expiredPasses} />
+                <Card title="Checked In" value={stats.checkedInVisitors} />
 
             </div>
 
-        </div>
+        </DashboardLayout>
 
     );
 
@@ -110,11 +81,11 @@ const Card = ({ title, value }) => {
 
         <div
             style={{
-                border: "1px solid #ccc",
+                background: "white",
                 borderRadius: "10px",
-                padding: "20px",
+                padding: "25px",
                 textAlign: "center",
-                boxShadow: "0px 2px 5px rgba(0,0,0,0.2)"
+                boxShadow: "0 2px 8px rgba(0,0,0,0.15)"
             }}
         >
 
