@@ -5,6 +5,7 @@ import Dashboard from "./pages/Dashboard";
 import Visitors from "./pages/Visitors";
 import Appointments from "./pages/Appointments";
 import Employees from "./pages/Employees";
+import Passes from "./pages/Passes";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -50,7 +51,14 @@ function App() {
         </ProtectedRoute>
     }
 />
-
+<Route
+    path="/passes"
+    element={
+        <ProtectedRoute>
+            <Passes />
+        </ProtectedRoute>
+    }
+/>
             </Routes>
         </BrowserRouter>
     );

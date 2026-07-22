@@ -77,6 +77,23 @@ const Appointments = () => {
         }
 
     };
+    const generatePass = async (appointmentId) => {
+
+    try {
+
+        await api.post(`/passes/generate/${appointmentId}`);
+
+        alert("Pass Generated Successfully");
+
+        fetchAppointments();
+
+    } catch (error) {
+
+        alert(error.response?.data?.message || "Failed to generate pass");
+
+    }
+
+};
 
     return (
 
@@ -172,34 +189,30 @@ const Appointments = () => {
                                 <td>
 
                                     {appointment.status === "pending" && (
+    <>
+        <button
+            onClick={() => approveAppointment(appointment._id)}
+        >
+            Approve
+        </button>
 
-                                        <>
+        {" "}
 
-                                            <button
-                                                onClick={() =>
-                                                    approveAppointment(
-                                                        appointment._id
-                                                    )
-                                                }
-                                            >
-                                                Approve
-                                            </button>
+        <button
+            onClick={() => rejectAppointment(appointment._id)}
+        >
+            Reject
+        </button>
+    </>
+)}
 
-                                            {" "}
-
-                                            <button
-                                                onClick={() =>
-                                                    rejectAppointment(
-                                                        appointment._id
-                                                    )
-                                                }
-                                            >
-                                                Reject
-                                            </button>
-
-                                        </>
-
-                                    )}
+{appointment.status === "approved" && (
+    <button
+        onClick={() => generatePass(appointment._id)}
+    >
+        Generate Pass
+    </button>
+)}
 
                                 </td>
 

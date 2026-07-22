@@ -48,6 +48,7 @@ const Sidebar = () => {
                         <Link style={linkStyle} to="/passes">
                             Passes
                         </Link>
+                        <Link to="/passes">Passes</Link>
                     </>
                 )}
 

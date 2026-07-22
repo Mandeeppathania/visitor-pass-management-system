@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 
 const authRoutes = require("./routes/authRoutes");
 const visitorRoutes = require("./routes/visitorRoutes");
@@ -9,11 +10,16 @@ const passRoutes = require("./routes/passRoutes");
 const checkLogRoutes = require("./routes/checkLogRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
 
+
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(
+    "/uploads",
+    express.static(path.join(__dirname, "uploads"))
+);
 
 // Home route
 app.get("/", (req, res) => {
