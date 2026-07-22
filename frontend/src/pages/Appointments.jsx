@@ -3,47 +3,29 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import api from "../services/api";
 import { useAuth } from "../context/AuthContext";
 
-import Modal from "../components/Modal";
-import AddAppointment from "../components/AddAppointment";
-
 const Appointments = () => {
     const { user } = useAuth();
 
     const [appointments, setAppointments] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const [open, setOpen] = useState(false);
-
     useEffect(() => {
-
         fetchAppointments();
-
     }, []);
 
     const fetchAppointments = async () => {
-
         try {
-
             const response = await api.get("/appointments");
-
             setAppointments(response.data);
-
         } catch (error) {
-
             console.log(error);
-
         } finally {
-
             setLoading(false);
-
         }
-
     };
 
     const approveAppointment = async (id) => {
-
         try {
-
             await api.put(`/appointments/${id}/approve`);
 
             alert("Appointment Approved");
@@ -55,7 +37,6 @@ const Appointments = () => {
             alert(error.response?.data?.message);
 
         }
-
     };
 
     const rejectAppointment = async (id) => {
@@ -77,159 +58,152 @@ const Appointments = () => {
         }
 
     };
-    const generatePass = async (appointmentId) => {
 
-    try {
+    const generatePass = async (id) => {
 
-        await api.post(`/passes/generate/${appointmentId}`);
+        try {
 
-        alert("Pass Generated Successfully");
+            await api.post(`/passes/generate/${id}`);
 
-        fetchAppointments();
+            alert("Pass Generated Successfully");
 
-    } catch (error) {
+            fetchAppointments();
 
-        alert(error.response?.data?.message || "Failed to generate pass");
+        } catch (error) {
 
+            alert(
+                error.response?.data?.message ||
+                "Unable to generate pass"
+            );
+
+        }
+
+    };
+
+    if (loading) {
+        return (
+            <DashboardLayout>
+                <h2>Loading...</h2>
+            </DashboardLayout>
+        );
     }
-
-};
 
     return (
 
         <DashboardLayout>
 
-            <div
+            <h1>Appointments</h1>
+
+            <table
+                border="1"
+                cellPadding="10"
                 style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: "20px"
+                    width: "100%",
+                    borderCollapse: "collapse"
                 }}
             >
 
-                <h1>Appointments</h1>
+                <thead>
 
-                {user.role === "admin" && (
-    <button
-        onClick={() => setOpen(true)}
-    >
-        + Request Appointment
-    </button>
-)}
+                    <tr>
 
-            </div>
+                        <th>Visitor</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Employee</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Purpose</th>
+                        <th>Status</th>
+                        <th>Action</th>
 
-            <Modal
-                isOpen={open}
-                onClose={() => setOpen(false)}
-                title="Request Appointment"
-            >
+                    </tr>
 
-                <AddAppointment
-                    fetchAppointments={fetchAppointments}
-                    onClose={() => setOpen(false)}
-                />
+                </thead>
 
-            </Modal>
+                <tbody>
 
-            {loading ? (
+                    {appointments.map((appointment) => (
 
-                <h2>Loading...</h2>
+                        <tr key={appointment._id}>
 
-            ) : (
+                            <td>{appointment.visitor?.name}</td>
 
-                <table
-                    border="1"
-                    cellPadding="10"
-                    style={{
-                        width: "100%",
-                        borderCollapse: "collapse"
-                    }}
-                >
+                            <td>{appointment.visitor?.email}</td>
 
-                    <thead>
+                            <td>{appointment.visitor?.phone}</td>
 
-                        <tr>
+                            <td>{appointment.host?.name}</td>
 
-                            <th>Visitor</th>
-                            <th>Employee</th>
-                            <th>Date</th>
-                            <th>Time</th>
-                            <th>Purpose</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <td>
+                                {new Date(
+                                    appointment.visitDate
+                                ).toLocaleDateString()}
+                            </td>
+
+                            <td>{appointment.visitTime}</td>
+
+                            <td>{appointment.purpose}</td>
+
+                            <td>{appointment.status}</td>
+
+                            <td>
+
+                                {appointment.status === "pending" &&
+                                    (user.role === "employee" ||
+                                        user.role === "admin") && (
+                                        <>
+                                            <button
+                                                onClick={() =>
+                                                    approveAppointment(
+                                                        appointment._id
+                                                    )
+                                                }
+                                            >
+                                                Approve
+                                            </button>
+
+                                            {" "}
+
+                                            <button
+                                                onClick={() =>
+                                                    rejectAppointment(
+                                                        appointment._id
+                                                    )
+                                                }
+                                            >
+                                                Reject
+                                            </button>
+                                        </>
+                                    )}
+
+                                {appointment.status === "approved" &&
+                                    (user.role === "employee" ||
+                                        user.role === "admin") && (
+                                        <button
+                                            onClick={() =>
+                                                generatePass(
+                                                    appointment._id
+                                                )
+                                            }
+                                        >
+                                            Generate Pass
+                                        </button>
+                                    )}
+
+                            </td>
 
                         </tr>
 
-                    </thead>
+                    ))}
 
-                    <tbody>
+                </tbody>
 
-                        {appointments.map((appointment) => (
-
-                            <tr key={appointment._id}>
-
-                                <td>{appointment.visitor?.name}</td>
-
-                                <td>{appointment.host?.name}</td>
-
-                                <td>
-                                    {new Date(
-                                        appointment.visitDate
-                                    ).toLocaleDateString()}
-                                </td>
-
-                                <td>{appointment.visitTime}</td>
-
-                                <td>{appointment.purpose}</td>
-
-                                <td>{appointment.status}</td>
-
-                                <td>
-
-                                    {appointment.status === "pending" && (
-    <>
-        <button
-            onClick={() => approveAppointment(appointment._id)}
-        >
-            Approve
-        </button>
-
-        {" "}
-
-        <button
-            onClick={() => rejectAppointment(appointment._id)}
-        >
-            Reject
-        </button>
-    </>
-)}
-
-{appointment.status === "approved" && (
-    <button
-        onClick={() => generatePass(appointment._id)}
-    >
-        Generate Pass
-    </button>
-)}
-
-                                </td>
-
-                            </tr>
-
-                        ))}
-
-                    </tbody>
-
-                </table>
-
-            )}
+            </table>
 
         </DashboardLayout>
 
     );
-
 };
 
 export default Appointments;

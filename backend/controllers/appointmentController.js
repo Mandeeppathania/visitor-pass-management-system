@@ -2,29 +2,37 @@ const Appointment = require("../models/Appointment");
 const Visitor = require("../models/Visitor");
 const User = require("../models/User");
 
-// Create Appointment
+// Create Appointment (Public Request)
 const createAppointment = async (req, res) => {
-
     try {
 
         const {
-            visitor,
+            name,
+            email,
+            phone,
+            company,
             host,
             visitDate,
             visitTime,
             purpose
         } = req.body;
 
-        // Check if visitor exists
-        const visitorExists = await Visitor.findById(visitor);
-
-        if (!visitorExists) {
-            return res.status(404).json({
-                message: "Visitor not found"
+        // Basic validation
+        if (
+            !name ||
+            !email ||
+            !phone ||
+            !host ||
+            !visitDate ||
+            !visitTime ||
+            !purpose
+        ) {
+            return res.status(400).json({
+                message: "Please fill all required fields"
             });
         }
 
-        // Check if selected host is an active employee
+        // Check employee
         const hostExists = await User.findOne({
             _id: host,
             role: "employee",
@@ -33,32 +41,44 @@ const createAppointment = async (req, res) => {
 
         if (!hostExists) {
             return res.status(404).json({
-                message: "Employee not found"
+                message: "Selected employee not found"
+            });
+        }
+
+        // Find visitor by email
+        let visitor = await Visitor.findOne({ email });
+
+        // Create visitor if not found
+        if (!visitor) {
+            visitor = await Visitor.create({
+                name,
+                email,
+                phone,
+                company
             });
         }
 
         // Create appointment
         const appointment = await Appointment.create({
-            visitor,
+            visitor: visitor._id,
             host,
             visitDate,
             visitTime,
             purpose
         });
 
-        return res.status(201).json({
-            message: "Appointment Request Sent Successfully",
+        res.status(201).json({
+            message: "Appointment Request Submitted Successfully",
             appointment
         });
 
     } catch (error) {
 
-        return res.status(500).json({
+        res.status(500).json({
             message: error.message
         });
 
     }
-
 };
 
 // Get All Appointments
@@ -68,13 +88,14 @@ const getAppointments = async (req, res) => {
 
         const appointments = await Appointment.find()
             .populate("visitor", "name email phone company")
-            .populate("host", "name department email");
+            .populate("host", "name department email")
+            .sort({ createdAt: -1 });
 
-        return res.status(200).json(appointments);
+        res.json(appointments);
 
     } catch (error) {
 
-        return res.status(500).json({
+        res.status(500).json({
             message: error.message
         });
 
@@ -82,7 +103,7 @@ const getAppointments = async (req, res) => {
 
 };
 
-// Get Pending Appointments
+// Pending Appointments
 const getPendingAppointments = async (req, res) => {
 
     try {
@@ -91,13 +112,14 @@ const getPendingAppointments = async (req, res) => {
             status: "pending"
         })
             .populate("visitor", "name email phone company")
-            .populate("host", "name department email");
+            .populate("host", "name department email")
+            .sort({ createdAt: -1 });
 
-        return res.status(200).json(appointments);
+        res.json(appointments);
 
     } catch (error) {
 
-        return res.status(500).json({
+        res.status(500).json({
             message: error.message
         });
 
@@ -105,7 +127,7 @@ const getPendingAppointments = async (req, res) => {
 
 };
 
-// Approve Appointment
+// Approve
 const approveAppointment = async (req, res) => {
 
     try {
@@ -118,24 +140,18 @@ const approveAppointment = async (req, res) => {
             });
         }
 
-        if (appointment.status === "approved") {
-            return res.status(400).json({
-                message: "Appointment already approved"
-            });
-        }
-
         appointment.status = "approved";
 
         await appointment.save();
 
-        return res.status(200).json({
+        res.json({
             message: "Appointment Approved Successfully",
             appointment
         });
 
     } catch (error) {
 
-        return res.status(500).json({
+        res.status(500).json({
             message: error.message
         });
 
@@ -143,7 +159,7 @@ const approveAppointment = async (req, res) => {
 
 };
 
-// Reject Appointment
+// Reject
 const rejectAppointment = async (req, res) => {
 
     try {
@@ -156,27 +172,19 @@ const rejectAppointment = async (req, res) => {
             });
         }
 
-        if (appointment.status === "rejected") {
-            return res.status(400).json({
-                message: "Appointment already rejected"
-            });
-        }
-
         appointment.status = "rejected";
-
-        // Save rejection reason
-        appointment.remarks = req.body.remarks || "No reason provided";
+        appointment.remarks = req.body.remarks || "";
 
         await appointment.save();
 
-        return res.status(200).json({
+        res.json({
             message: "Appointment Rejected Successfully",
             appointment
         });
 
     } catch (error) {
 
-        return res.status(500).json({
+        res.status(500).json({
             message: error.message
         });
 

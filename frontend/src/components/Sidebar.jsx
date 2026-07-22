@@ -45,10 +45,11 @@ const Sidebar = () => {
                             Appointments
                         </Link>
 
-                        <Link style={linkStyle} to="/passes">
-                            Passes
-                        </Link>
+                        
                         <Link to="/passes">Passes</Link>
+                        <Link to="/checklogs">
+    Check In / Out
+</Link>
                     </>
                 )}
 
