@@ -75,6 +75,9 @@ const passNumber = `VP-${year}-${String(totalPasses + 1).padStart(3, "0")}`;
         pass.pdf = pdfPath;
 
         await pass.save();
+        appointment.pass = pass._id;
+
+await appointment.save();
 
         // Send Email
         await sendVisitorPass(

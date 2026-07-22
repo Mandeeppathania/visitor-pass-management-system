@@ -39,7 +39,12 @@ const appointmentSchema = new mongoose.Schema({
     remarks: {
         type: String,
         default: ""
-    }
+    },
+    pass: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Pass",
+    default: null
+}
 
 }, {
     timestamps: true

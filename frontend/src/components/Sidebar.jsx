@@ -31,38 +31,86 @@ const Sidebar = () => {
                 }}
             >
 
-                <Link style={linkStyle} to="/dashboard">
+                <Link
+                    to="/dashboard"
+                    style={linkStyle}
+                >
                     Dashboard
                 </Link>
 
-                {(user.role === "admin" || user.role === "employee") && (
-                    <>
-                        <Link style={linkStyle} to="/visitors">
-                            Visitors
-                        </Link>
+                {/* ADMIN */}
 
-                        <Link style={linkStyle} to="/appointments">
+                {user.role === "admin" && (
+                    <>
+                        <Link
+                            to="/appointments"
+                            style={linkStyle}
+                        >
                             Appointments
                         </Link>
 
-                        
-                        <Link to="/passes">Passes</Link>
-                        <Link to="/checklogs">
-    Check In / Out
-</Link>
+                        <Link
+                            to="/employees"
+                            style={linkStyle}
+                        >
+                            Employees
+                        </Link>
+
+                        <Link
+                            to="/passes"
+                            style={linkStyle}
+                        >
+                            Passes
+                        </Link>
+
+                        <Link
+                            to="/checklogs"
+                            style={linkStyle}
+                        >
+                            Check Logs
+                        </Link>
                     </>
                 )}
 
-                {(user.role === "security") && (
-                    <Link style={linkStyle} to="/checkin">
-                        Check In / Out
-                    </Link>
+                {/* EMPLOYEE */}
+
+                {user.role === "employee" && (
+                    <>
+                        <Link
+                            to="/appointments"
+                            style={linkStyle}
+                        >
+                            Appointments
+                        </Link>
+
+                        <Link
+                            to="/passes"
+                            style={linkStyle}
+                        >
+                            Passes
+                        </Link>
+                    </>
                 )}
-                {
-    user.role === "admin" && (
-        <Link to="/employees">Employees</Link>
-    )
-}
+
+                {/* SECURITY */}
+
+                {user.role === "security" && (
+                    <>
+                        <Link
+                            to="/passes"
+                            style={linkStyle}
+                        >
+                            Passes
+                        </Link>
+
+                        <Link
+                            to="/checklogs"
+                            style={linkStyle}
+                        >
+                            Check In / Out
+                        </Link>
+                    </>
+                )}
 
             </nav>
 

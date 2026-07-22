@@ -25,19 +25,29 @@ const Appointments = () => {
     };
 
     const approveAppointment = async (id) => {
-        try {
-            await api.put(`/appointments/${id}/approve`);
 
-            alert("Appointment Approved");
+    try {
 
-            fetchAppointments();
+        // Approve appointment
+        await api.put(`/appointments/${id}/approve`);
 
-        } catch (error) {
+        // Automatically generate pass
+        await api.post(`/passes/generate/${id}`);
 
-            alert(error.response?.data?.message);
+        alert("Appointment Approved and Pass Generated Successfully");
 
-        }
-    };
+        fetchAppointments();
+
+    } catch (error) {
+
+        alert(
+            error.response?.data?.message ||
+            "Operation Failed"
+        );
+
+    }
+
+};
 
     const rejectAppointment = async (id) => {
 
@@ -177,19 +187,7 @@ const Appointments = () => {
                                         </>
                                     )}
 
-                                {appointment.status === "approved" &&
-                                    (user.role === "employee" ||
-                                        user.role === "admin") && (
-                                        <button
-                                            onClick={() =>
-                                                generatePass(
-                                                    appointment._id
-                                                )
-                                            }
-                                        >
-                                            Generate Pass
-                                        </button>
-                                    )}
+                                
 
                             </td>
 

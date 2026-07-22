@@ -1,17 +1,13 @@
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
-
-    service: "gmail",
-
+    host: process.env.EMAIL_HOST,
+    port: process.env.EMAIL_PORT,
+    secure: false,
     auth: {
-
         user: process.env.EMAIL_USER,
-
         pass: process.env.EMAIL_PASS
-
     }
-
 });
 
 const sendVisitorPass = async (
@@ -22,16 +18,18 @@ const sendVisitorPass = async (
 
     try {
 
-        await transporter.sendMail({
+        console.log("Sending email to:", visitorEmail);
+        console.log("PDF Path:", pdfPath);
 
-            from: process.env.EMAIL_USER,
+        const info = await transporter.sendMail({
+
+            from: `"Visitor Pass Management System" <${process.env.EMAIL_FROM}>`,
 
             to: visitorEmail,
 
             subject: "Visitor Pass Approved",
 
-            text:
-`Hello ${visitorName},
+            text: `Hello ${visitorName},
 
 Your appointment has been approved.
 
@@ -50,11 +48,16 @@ Thank You.`,
 
         });
 
+        console.log("================================");
         console.log("Email Sent Successfully");
+        console.log("Message ID:", info.messageId);
+        console.log("================================");
 
     } catch (error) {
 
-        console.log("Email Error:", error.message);
+        console.log("=========== EMAIL ERROR ===========");
+        console.log(error);
+        console.log("===================================");
 
     }
 
