@@ -20,6 +20,7 @@ const sendVisitorPass = async (
 
         console.log("Sending email to:", visitorEmail);
         console.log("PDF Path:", pdfPath);
+        console.log("EMAIL_FROM =", process.env.EMAIL_FROM);
 
         const info = await transporter.sendMail({
 

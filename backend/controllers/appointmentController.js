@@ -81,17 +81,44 @@ const createAppointment = async (req, res) => {
     }
 };
 
-// Get All Appointments
+// Get Appointments
 const getAppointments = async (req, res) => {
 
     try {
 
-        const appointments = await Appointment.find()
+        let filter = {};
+
+        // Admin can see all appointments
+        if (req.user.role === "admin") {
+
+            filter = {};
+
+        }
+
+        // Employee can see only his/her appointments
+        else if (req.user.role === "employee") {
+
+            filter = {
+                host: req.user.id
+            };
+
+        }
+
+        // Security can see only approved appointments
+        else if (req.user.role === "security") {
+
+            filter = {
+                status: "approved"
+            };
+
+        }
+
+        const appointments = await Appointment.find(filter)
             .populate("visitor", "name email phone company")
             .populate("host", "name department email")
             .sort({ createdAt: -1 });
 
-        res.json(appointments);
+        res.status(200).json(appointments);
 
     } catch (error) {
 
