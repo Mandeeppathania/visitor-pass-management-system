@@ -4,6 +4,7 @@ import api from "../services/api";
 import { useAuth } from "../context/AuthContext";
 
 const Appointments = () => {
+
     const { user } = useAuth();
 
     const [appointments, setAppointments] = useState([]);
@@ -14,48 +15,48 @@ const Appointments = () => {
     }, []);
 
     const fetchAppointments = async () => {
+
         try {
+
             const response = await api.get("/appointments");
             setAppointments(response.data);
+
         } catch (error) {
+
             console.log(error);
+
         } finally {
+
             setLoading(false);
+
         }
+
     };
 
     const approveAppointment = async (id) => {
 
-    try {
+        try {
 
-        // Approve appointment
-        await api.put(`/appointments/${id}/approve`);
+            await api.put(`/appointments/${id}/approve`);
+            await api.post(`/passes/generate/${id}`);
 
-        // Automatically generate pass
-        await api.post(`/passes/generate/${id}`);
+            alert("Appointment Approved Successfully");
 
-        alert("Appointment Approved and Pass Generated Successfully");
+            fetchAppointments();
 
-        fetchAppointments();
+        } catch (error) {
 
-    } catch (error) {
+            alert(error.response?.data?.message);
 
-        alert(
-            error.response?.data?.message ||
-            "Operation Failed"
-        );
+        }
 
-    }
-
-};
+    };
 
     const rejectAppointment = async (id) => {
 
         try {
 
-            await api.put(`/appointments/${id}/reject`, {
-                remarks: "Rejected"
-            });
+            await api.put(`/appointments/${id}/reject`);
 
             alert("Appointment Rejected");
 
@@ -69,139 +70,134 @@ const Appointments = () => {
 
     };
 
-    const generatePass = async (id) => {
-
-        try {
-
-            await api.post(`/passes/generate/${id}`);
-
-            alert("Pass Generated Successfully");
-
-            fetchAppointments();
-
-        } catch (error) {
-
-            alert(
-                error.response?.data?.message ||
-                "Unable to generate pass"
-            );
-
-        }
-
-    };
-
     if (loading) {
+
         return (
+
             <DashboardLayout>
-                <h2>Loading...</h2>
+
+                <h2>Loading Appointments...</h2>
+
             </DashboardLayout>
+
         );
+
     }
 
     return (
 
         <DashboardLayout>
 
-            <h1>Appointments</h1>
+            <div className="page-header">
 
-            <table
-                border="1"
-                cellPadding="10"
-                style={{
-                    width: "100%",
-                    borderCollapse: "collapse"
-                }}
-            >
+                <h1>Appointments</h1>
 
-                <thead>
+                <p>Manage visitor appointments</p>
 
-                    <tr>
+            </div>
 
-                        <th>Visitor</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Employee</th>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>Purpose</th>
-                        <th>Status</th>
-                        <th>Action</th>
+            <div className="table-container">
 
-                    </tr>
+                <table className="custom-table">
 
-                </thead>
+                    <thead>
 
-                <tbody>
+                        <tr>
 
-                    {appointments.map((appointment) => (
+                            <th>Visitor</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Employee</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Purpose</th>
+                            <th>Status</th>
+                            <th>Action</th>
 
-                        <tr key={appointment._id}>
+                        </tr>
 
-                            <td>{appointment.visitor?.name}</td>
+                    </thead>
 
-                            <td>{appointment.visitor?.email}</td>
+                    <tbody>
 
-                            <td>{appointment.visitor?.phone}</td>
+                        {appointments.map((appointment) => (
 
-                            <td>{appointment.host?.name}</td>
+                            <tr key={appointment._id}>
 
-                            <td>
-                                {new Date(
-                                    appointment.visitDate
-                                ).toLocaleDateString()}
-                            </td>
+                                <td>{appointment.visitor?.name}</td>
 
-                            <td>{appointment.visitTime}</td>
+                                <td>{appointment.visitor?.email}</td>
 
-                            <td>{appointment.purpose}</td>
+                                <td>{appointment.visitor?.phone}</td>
 
-                            <td>{appointment.status}</td>
+                                <td>{appointment.host?.name}</td>
 
-                            <td>
+                                <td>{new Date(appointment.visitDate).toLocaleDateString()}</td>
 
-                                {appointment.status === "pending" &&
-                                    (user.role === "employee" ||
-                                        user.role === "admin") && (
-                                        <>
+                                <td>{appointment.visitTime}</td>
+
+                                <td>{appointment.purpose}</td>
+
+                                <td>
+
+                                    <span className={`status ${appointment.status}`}>
+
+                                        {appointment.status}
+
+                                    </span>
+
+                                </td>
+
+                                <td>
+
+                                    {appointment.status === "pending" &&
+                                        (user.role === "employee" ||
+                                            user.role === "admin") ? (
+
+                                        <div className="action-buttons">
+
                                             <button
+                                                className="approve-btn"
                                                 onClick={() =>
-                                                    approveAppointment(
-                                                        appointment._id
-                                                    )
+                                                    approveAppointment(appointment._id)
                                                 }
                                             >
                                                 Approve
                                             </button>
 
-                                            {" "}
-
                                             <button
+                                                className="reject-btn"
                                                 onClick={() =>
-                                                    rejectAppointment(
-                                                        appointment._id
-                                                    )
+                                                    rejectAppointment(appointment._id)
                                                 }
                                             >
                                                 Reject
                                             </button>
-                                        </>
+
+                                        </div>
+
+                                    ) : (
+
+                                        <span>-</span>
+
                                     )}
 
-                                
+                                </td>
 
-                            </td>
+                            </tr>
 
-                        </tr>
+                        ))}
 
-                    ))}
+                    </tbody>
 
-                </tbody>
+                </table>
 
-            </table>
+            </div>
 
         </DashboardLayout>
 
     );
+
 };
 
 export default Appointments;

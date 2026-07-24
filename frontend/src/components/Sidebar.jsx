@@ -1,112 +1,70 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const Sidebar = () => {
 
     const { user } = useAuth();
+    const location = useLocation();
+
+    const active = (path) =>
+        location.pathname === path ? "sidebar-link active" : "sidebar-link";
 
     return (
 
-        <div
-            style={{
-                width: "240px",
-                background: "#1e293b",
-                color: "white",
-                minHeight: "100vh",
-                padding: "20px",
-                boxSizing: "border-box"
-            }}
-        >
+        <aside className="sidebar">
 
-            <h2>Visitor Pass</h2>
+            <div className="sidebar-logo">
 
-            <hr />
+                <h2>Visitor Pass</h2>
+                <p>Management System</p>
 
-            <nav
-                style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "15px",
-                    marginTop: "20px"
-                }}
-            >
+            </div>
 
-                <Link
-                    to="/dashboard"
-                    style={linkStyle}
-                >
+            <nav className="sidebar-nav">
+
+                <Link to="/dashboard" className={active("/dashboard")}>
                     Dashboard
                 </Link>
 
-                {/* ADMIN */}
-
                 {user.role === "admin" && (
                     <>
-                        <Link
-                            to="/appointments"
-                            style={linkStyle}
-                        >
+                        <Link to="/appointments" className={active("/appointments")}>
                             Appointments
                         </Link>
 
-                        <Link
-                            to="/employees"
-                            style={linkStyle}
-                        >
+                        <Link to="/employees" className={active("/employees")}>
                             Employees
                         </Link>
 
-                        <Link
-                            to="/passes"
-                            style={linkStyle}
-                        >
+                        <Link to="/passes" className={active("/passes")}>
                             Passes
                         </Link>
 
-                        <Link
-                            to="/checklogs"
-                            style={linkStyle}
-                        >
+                        <Link to="/checklogs" className={active("/checklogs")}>
                             Check Logs
                         </Link>
                     </>
                 )}
 
-                {/* EMPLOYEE */}
-
                 {user.role === "employee" && (
                     <>
-                        <Link
-                            to="/appointments"
-                            style={linkStyle}
-                        >
+                        <Link to="/appointments" className={active("/appointments")}>
                             Appointments
                         </Link>
 
-                        <Link
-                            to="/passes"
-                            style={linkStyle}
-                        >
+                        <Link to="/passes" className={active("/passes")}>
                             Passes
                         </Link>
                     </>
                 )}
 
-                {/* SECURITY */}
-
                 {user.role === "security" && (
                     <>
-                        <Link
-                            to="/passes"
-                            style={linkStyle}
-                        >
+                        <Link to="/passes" className={active("/passes")}>
                             Passes
                         </Link>
 
-                        <Link
-                            to="/checklogs"
-                            style={linkStyle}
-                        >
+                        <Link to="/checklogs" className={active("/checklogs")}>
                             Check In / Out
                         </Link>
                     </>
@@ -114,16 +72,10 @@ const Sidebar = () => {
 
             </nav>
 
-        </div>
+        </aside>
 
     );
 
-};
-
-const linkStyle = {
-    color: "white",
-    textDecoration: "none",
-    fontSize: "18px"
 };
 
 export default Sidebar;

@@ -11,13 +11,10 @@ const Visitors = () => {
     const [loading, setLoading] = useState(true);
 
     const [open, setOpen] = useState(false);
-
     const [selectedVisitor, setSelectedVisitor] = useState(null);
 
     useEffect(() => {
-
         fetchVisitors();
-
     }, []);
 
     const fetchVisitors = async () => {
@@ -25,7 +22,6 @@ const Visitors = () => {
         try {
 
             const response = await api.get("/visitors");
-
             setVisitors(response.data);
 
         } catch (error) {
@@ -47,7 +43,6 @@ const Visitors = () => {
         try {
 
             await api.delete(`/visitors/${id}`);
-
             fetchVisitors();
 
         } catch (error) {
@@ -61,7 +56,6 @@ const Visitors = () => {
     const openAddModal = () => {
 
         setSelectedVisitor(null);
-
         setOpen(true);
 
     };
@@ -69,7 +63,6 @@ const Visitors = () => {
     const openEditModal = (visitor) => {
 
         setSelectedVisitor(visitor);
-
         setOpen(true);
 
     };
@@ -78,20 +71,20 @@ const Visitors = () => {
 
         <DashboardLayout>
 
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    marginBottom: "20px"
-                }}
-            >
+            <div className="page-header visitor-header">
 
-                <h1>Visitors</h1>
+                <div>
 
-                <button onClick={openAddModal}>
+                    <h1>Visitors</h1>
+                    <p>Manage all registered visitors</p>
 
+                </div>
+
+                <button
+                    className="primary-btn"
+                    onClick={openAddModal}
+                >
                     + Add Visitor
-
                 </button>
 
             </div>
@@ -107,89 +100,103 @@ const Visitors = () => {
             >
 
                 <AddVisitor
-
                     visitor={selectedVisitor}
-
                     fetchVisitors={fetchVisitors}
-
                     onClose={() => setOpen(false)}
-
                 />
 
             </Modal>
 
             {loading ? (
 
-                <h2>Loading...</h2>
+                <h2>Loading Visitors...</h2>
 
             ) : (
 
-                <table
-                    border="1"
-                    cellPadding="10"
-                    style={{
-                        width: "100%",
-                        borderCollapse: "collapse"
-                    }}
-                >
+                <div className="table-container">
 
-                    <thead>
+                    <table className="custom-table">
 
-                        <tr>
+                        <thead>
 
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Company</th>
-                            <th>Actions</th>
+                            <tr>
 
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                        {visitors.map((visitor) => (
-
-                            <tr key={visitor._id}>
-
-                                <td>{visitor.name}</td>
-
-                                <td>{visitor.email}</td>
-
-                                <td>{visitor.phone}</td>
-
-                                <td>{visitor.company}</td>
-
-                                <td>
-
-                                    <button
-                                        onClick={() =>
-                                            openEditModal(visitor)
-                                        }
-                                    >
-                                        Edit
-                                    </button>
-
-                                    {" "}
-
-                                    <button
-                                        onClick={() =>
-                                            deleteVisitor(visitor._id)
-                                        }
-                                    >
-                                        Delete
-                                    </button>
-
-                                </td>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Company</th>
+                                <th>Actions</th>
 
                             </tr>
 
-                        ))}
+                        </thead>
 
-                    </tbody>
+                        <tbody>
 
-                </table>
+                            {visitors.length > 0 ? (
+
+                                visitors.map((visitor) => (
+
+                                    <tr key={visitor._id}>
+
+                                        <td>{visitor.name}</td>
+
+                                        <td>{visitor.email}</td>
+
+                                        <td>{visitor.phone}</td>
+
+                                        <td>{visitor.company}</td>
+
+                                        <td>
+
+                                            <div className="action-buttons">
+
+                                                <button
+                                                    className="edit-btn"
+                                                    onClick={() =>
+                                                        openEditModal(visitor)
+                                                    }
+                                                >
+                                                    Edit
+                                                </button>
+
+                                                <button
+                                                    className="delete-btn"
+                                                    onClick={() =>
+                                                        deleteVisitor(visitor._id)
+                                                    }
+                                                >
+                                                    Delete
+                                                </button>
+
+                                            </div>
+
+                                        </td>
+
+                                    </tr>
+
+                                ))
+
+                            ) : (
+
+                                <tr>
+
+                                    <td
+                                        colSpan="5"
+                                        style={{ textAlign: "center" }}
+                                    >
+                                        No Visitors Found
+                                    </td>
+
+                                </tr>
+
+                            )}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
 
             )}
 

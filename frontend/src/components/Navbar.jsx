@@ -4,50 +4,47 @@ import { useNavigate } from "react-router-dom";
 const Navbar = () => {
 
     const { user, logout } = useAuth();
-
     const navigate = useNavigate();
 
     const handleLogout = () => {
 
         logout();
-
         navigate("/");
 
     };
 
     return (
 
-        <div
-            style={{
-                height: "70px",
-                background: "#ffffff",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: "0 30px",
-                borderBottom: "1px solid #ddd"
-            }}
-        >
+        <header className="navbar">
 
-            <h3>Visitor Pass Management System</h3>
+            <div className="navbar-title">
 
-            <div>
+                <h2>Visitor Pass Management System</h2>
 
-                <span
-                    style={{
-                        marginRight: "20px"
-                    }}
+                <p>Secure Visitor & Pass Management</p>
+
+            </div>
+
+            <div className="navbar-right">
+
+                <div className="user-info">
+
+                    <span className="user-role">
+                        {user.role.toUpperCase()}
+                    </span>
+
+                </div>
+
+                <button
+                    className="logout-btn"
+                    onClick={handleLogout}
                 >
-                    {user.role.toUpperCase()}
-                </span>
-
-                <button onClick={handleLogout}>
                     Logout
                 </button>
 
             </div>
 
-        </div>
+        </header>
 
     );
 

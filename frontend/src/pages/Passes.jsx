@@ -8,9 +8,7 @@ const Passes = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-
         fetchPasses();
-
     }, []);
 
     const fetchPasses = async () => {
@@ -18,7 +16,6 @@ const Passes = () => {
         try {
 
             const response = await api.get("/passes");
-
             setPasses(response.data);
 
         } catch (error) {
@@ -37,107 +34,107 @@ const Passes = () => {
 
         <DashboardLayout>
 
-            <h1>Pass Management</h1>
+            <div className="page-header">
+
+                <h1>Pass Management</h1>
+
+                <p>View generated visitor passes</p>
+
+            </div>
 
             {loading ? (
 
-                <h2>Loading...</h2>
+                <h2>Loading Passes...</h2>
 
             ) : (
 
-                <table
-                    border="1"
-                    cellPadding="10"
-                    style={{
-                        width: "100%",
-                        borderCollapse: "collapse"
-                    }}
-                >
+                <div className="table-container">
 
-                    <thead>
+                    <table className="custom-table">
 
-                        <tr>
+                        <thead>
 
-                            <th>Pass No.</th>
-                            <th>Visitor</th>
-                            <th>Employee</th>
-                            <th>Status</th>
-                            <th>QR Code</th>
-                            <th>PDF</th>
+                            <tr>
 
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                        {passes.map((pass) => (
-
-                            <tr key={pass._id}>
-
-                                <td>
-
-                                    {pass.passNumber}
-
-                                </td>
-
-                                <td>
-
-                                    {pass.appointment?.visitor?.name}
-
-                                </td>
-
-                                <td>
-
-                                    {pass.appointment?.host?.name}
-
-                                </td>
-
-                                <td>
-
-                                    {pass.status}
-
-                                </td>
-
-                                <td>
-
-                                    <img
-
-                                        src={`http://localhost:5000/${pass.qrCode}`}
-
-                                        alt="QR"
-
-                                        width="80"
-
-                                    />
-
-                                </td>
-
-                                <td>
-
-                                    <a
-
-                                        href={`http://localhost:5000/${pass.pdf}`}
-
-                                        target="_blank"
-
-                                        rel="noreferrer"
-
-                                    >
-
-                                        Download
-
-                                    </a>
-
-                                </td>
+                                <th>Pass No.</th>
+                                <th>Visitor</th>
+                                <th>Employee</th>
+                                <th>Status</th>
+                                <th>QR Code</th>
+                                <th>PDF</th>
 
                             </tr>
 
-                        ))}
+                        </thead>
 
-                    </tbody>
+                        <tbody>
 
-                </table>
+                            {passes.length > 0 ? (
+
+                                passes.map((pass) => (
+
+                                    <tr key={pass._id}>
+
+                                        <td>{pass.passNumber}</td>
+
+                                        <td>{pass.appointment?.visitor?.name}</td>
+
+                                        <td>{pass.appointment?.host?.name}</td>
+
+                                        <td>
+
+                                            <span className={`status ${pass.status}`}>
+
+                                                {pass.status}
+
+                                            </span>
+
+                                        </td>
+
+                                        <td>
+
+                                            <img
+                                                className="qr-image"
+                                                src={`http://localhost:5000/${pass.qrCode}`}
+                                                alt="QR Code"
+                                            />
+
+                                        </td>
+
+                                        <td>
+
+                                            <a
+                                                className="download-btn"
+                                                href={`http://localhost:5000/${pass.pdf}`}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                            >
+                                                Download PDF
+                                            </a>
+
+                                        </td>
+
+                                    </tr>
+
+                                ))
+
+                            ) : (
+
+                                <tr>
+
+                                    <td colSpan="6" style={{ textAlign: "center" }}>
+                                        No Passes Found
+                                    </td>
+
+                                </tr>
+
+                            )}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
 
             )}
 

@@ -76,50 +76,51 @@ const AddVisitor = ({ fetchVisitors, onClose, visitor }) => {
     return (
 
         <form
+            className="visitor-form"
             onSubmit={handleSubmit}
-            style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "15px"
-            }}
         >
 
             <input
                 type="text"
                 name="name"
-                placeholder="Name"
+                placeholder="Full Name"
                 value={form.name}
                 onChange={handleChange}
+                required
             />
 
             <input
                 type="email"
                 name="email"
-                placeholder="Email"
+                placeholder="Email Address"
                 value={form.email}
                 onChange={handleChange}
+                required
             />
 
             <input
                 type="text"
                 name="phone"
-                placeholder="Phone"
+                placeholder="Phone Number"
                 value={form.phone}
                 onChange={handleChange}
+                required
             />
 
             <input
                 type="text"
                 name="company"
-                placeholder="Company"
+                placeholder="Company Name"
                 value={form.company}
                 onChange={handleChange}
+                required
             />
 
-            <button type="submit">
-
+            <button
+                className="primary-btn"
+                type="submit"
+            >
                 {visitor ? "Update Visitor" : "Add Visitor"}
-
             </button>
 
         </form>

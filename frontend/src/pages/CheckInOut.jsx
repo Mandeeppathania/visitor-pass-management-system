@@ -13,7 +13,9 @@ const CheckInOut = () => {
     useEffect(() => {
 
         if (user.role === "admin") {
+
             fetchLogs();
+
         }
 
     }, []);
@@ -37,8 +39,11 @@ const CheckInOut = () => {
     const checkIn = async () => {
 
         if (!passNumber) {
+
             alert("Enter Pass Number");
+
             return;
+
         }
 
         try {
@@ -62,8 +67,11 @@ const CheckInOut = () => {
     const checkOut = async () => {
 
         if (!passNumber) {
+
             alert("Enter Pass Number");
+
             return;
+
         }
 
         try {
@@ -88,34 +96,43 @@ const CheckInOut = () => {
 
         <DashboardLayout>
 
-            <h1>Visitor Check In / Check Out</h1>
+            <div className="page-header">
+
+                <h1>Visitor Check In / Check Out</h1>
+
+                <p>Manage visitor entry and exit records</p>
+
+            </div>
 
             {user.role === "security" && (
 
-                <div
-                    style={{
-                        maxWidth: "500px",
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "20px",
-                        marginBottom: "40px"
-                    }}
-                >
+                <div className="check-card">
 
                     <input
+                        className="check-input"
                         type="text"
                         placeholder="Enter Pass Number"
                         value={passNumber}
                         onChange={(e) => setPassNumber(e.target.value)}
                     />
 
-                    <button onClick={checkIn}>
-                        Check In
-                    </button>
+                    <div className="check-buttons">
 
-                    <button onClick={checkOut}>
-                        Check Out
-                    </button>
+                        <button
+                            className="checkin-btn"
+                            onClick={checkIn}
+                        >
+                            Check In
+                        </button>
+
+                        <button
+                            className="checkout-btn"
+                            onClick={checkOut}
+                        >
+                            Check Out
+                        </button>
+
+                    </div>
 
                 </div>
 
@@ -123,18 +140,9 @@ const CheckInOut = () => {
 
             {user.role === "admin" && (
 
-                <>
+                <div className="table-container">
 
-                    <h2>Check Logs</h2>
-
-                    <table
-                        border="1"
-                        cellPadding="10"
-                        style={{
-                            width: "100%",
-                            borderCollapse: "collapse"
-                        }}
-                    >
+                    <table className="custom-table">
 
                         <thead>
 
@@ -158,23 +166,11 @@ const CheckInOut = () => {
 
                                     <tr key={log._id}>
 
-                                        <td>
+                                        <td>{log.pass?.passNumber}</td>
 
-                                            {log.pass?.passNumber}
+                                        <td>{log.pass?.appointment?.visitor?.name}</td>
 
-                                        </td>
-
-                                        <td>
-
-                                            {log.pass?.appointment?.visitor?.name}
-
-                                        </td>
-
-                                        <td>
-
-                                            {log.pass?.appointment?.host?.name}
-
-                                        </td>
+                                        <td>{log.pass?.appointment?.host?.name}</td>
 
                                         <td>
 
@@ -202,9 +198,7 @@ const CheckInOut = () => {
 
                                     <td
                                         colSpan="5"
-                                        style={{
-                                            textAlign: "center"
-                                        }}
+                                        style={{ textAlign: "center" }}
                                     >
                                         No Check Logs Found
                                     </td>
@@ -217,7 +211,7 @@ const CheckInOut = () => {
 
                     </table>
 
-                </>
+                </div>
 
             )}
 

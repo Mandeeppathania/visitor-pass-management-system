@@ -24,19 +24,27 @@ const RequestAppointment = () => {
     }, []);
 
     const fetchEmployees = async () => {
+
         try {
+
             const res = await api.get("/users/employees");
             setEmployees(res.data);
+
         } catch (error) {
+
             console.log(error);
+
         }
+
     };
 
     const handleChange = (e) => {
+
         setForm({
             ...form,
             [e.target.name]: e.target.value
         });
+
     };
 
     const handleSubmit = async (e) => {
@@ -67,74 +75,69 @@ const RequestAppointment = () => {
 
     return (
 
-        <div
-            style={{
-                display: "flex",
-                justifyContent: "center",
-                marginTop: "40px"
-            }}
-        >
+        <div className="request-page">
 
-            <form
-                onSubmit={handleSubmit}
-                style={{
-                    width: "450px"
-                }}
-            >
+            <div className="request-card">
 
-                <h2>Visitor Appointment Request</h2>
+                <h1>Appointment Request</h1>
 
-                <input
-                    type="text"
-                    name="name"
-                    placeholder="Full Name"
-                    value={form.name}
-                    onChange={handleChange}
-                />
+                <p>
+                    Fill in your details to request an appointment with an employee.
+                </p>
 
-                <br /><br />
-
-                <input
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    value={form.email}
-                    onChange={handleChange}
-                />
-
-                <br /><br />
-
-                <input
-                    type="text"
-                    name="phone"
-                    placeholder="Phone"
-                    value={form.phone}
-                    onChange={handleChange}
-                />
-
-                <br /><br />
-
-                <input
-                    type="text"
-                    name="company"
-                    placeholder="Company"
-                    value={form.company}
-                    onChange={handleChange}
-                />
-
-                <br /><br />
-
-                <select
-                    name="host"
-                    value={form.host}
-                    onChange={handleChange}
+                <form
+                    className="request-form"
+                    onSubmit={handleSubmit}
                 >
-                    <option value="">
-                        Select Employee
-                    </option>
 
-                    {
-                        employees.map(emp => (
+                    <input
+                        type="text"
+                        name="name"
+                        placeholder="Full Name"
+                        value={form.name}
+                        onChange={handleChange}
+                        required
+                    />
+
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="Email Address"
+                        value={form.email}
+                        onChange={handleChange}
+                        required
+                    />
+
+                    <input
+                        type="text"
+                        name="phone"
+                        placeholder="Phone Number"
+                        value={form.phone}
+                        onChange={handleChange}
+                        required
+                    />
+
+                    <input
+                        type="text"
+                        name="company"
+                        placeholder="Company"
+                        value={form.company}
+                        onChange={handleChange}
+                        required
+                    />
+
+                    <select
+                        name="host"
+                        value={form.host}
+                        onChange={handleChange}
+                        required
+                    >
+
+                        <option value="">
+                            Select Employee
+                        </option>
+
+                        {employees.map((emp) => (
 
                             <option
                                 key={emp._id}
@@ -143,45 +146,45 @@ const RequestAppointment = () => {
                                 {emp.name} ({emp.department})
                             </option>
 
-                        ))
-                    }
+                        ))}
 
-                </select>
+                    </select>
 
-                <br /><br />
+                    <input
+                        type="date"
+                        name="visitDate"
+                        value={form.visitDate}
+                        onChange={handleChange}
+                        required
+                    />
 
-                <input
-                    type="date"
-                    name="visitDate"
-                    value={form.visitDate}
-                    onChange={handleChange}
-                />
+                    <input
+                        type="time"
+                        name="visitTime"
+                        value={form.visitTime}
+                        onChange={handleChange}
+                        required
+                    />
 
-                <br /><br />
+                    <textarea
+                        name="purpose"
+                        placeholder="Purpose of Visit"
+                        rows="4"
+                        value={form.purpose}
+                        onChange={handleChange}
+                        required
+                    />
 
-                <input
-                    type="time"
-                    name="visitTime"
-                    value={form.visitTime}
-                    onChange={handleChange}
-                />
+                    <button
+                        className="primary-btn"
+                        type="submit"
+                    >
+                        Submit Request
+                    </button>
 
-                <br /><br />
+                </form>
 
-                <textarea
-                    name="purpose"
-                    placeholder="Purpose of Visit"
-                    value={form.purpose}
-                    onChange={handleChange}
-                />
-
-                <br /><br />
-
-                <button type="submit">
-                    Submit Request
-                </button>
-
-            </form>
+            </div>
 
         </div>
 

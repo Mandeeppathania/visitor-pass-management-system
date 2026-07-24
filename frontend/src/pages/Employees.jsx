@@ -16,9 +16,7 @@ const Employees = () => {
     });
 
     useEffect(() => {
-
         fetchUsers();
-
     }, []);
 
     const fetchUsers = async () => {
@@ -26,7 +24,6 @@ const Employees = () => {
         try {
 
             const response = await api.get("/users");
-
             setUsers(response.data);
 
         } catch (error) {
@@ -79,153 +76,142 @@ const Employees = () => {
 
         <DashboardLayout>
 
-            <h1>Employee Management</h1>
+            <div className="page-header">
+                <h1>Employee Management</h1>
+                <p>Create and manage employees & security staff</p>
+            </div>
 
-            <form
-                onSubmit={handleSubmit}
-                style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "15px",
-                    maxWidth: "500px",
-                    marginBottom: "40px"
-                }}
-            >
+            <div className="employee-form-card">
 
-                <input
-                    type="text"
-                    name="name"
-                    placeholder="Full Name"
-                    value={form.name}
-                    onChange={handleChange}
-                    required
-                />
+                <form className="employee-form" onSubmit={handleSubmit}>
 
-                <input
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    value={form.email}
-                    onChange={handleChange}
-                    required
-                />
+                    <input
+                        type="text"
+                        name="name"
+                        placeholder="Full Name"
+                        value={form.name}
+                        onChange={handleChange}
+                        required
+                    />
 
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    value={form.password}
-                    onChange={handleChange}
-                    required
-                />
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="Email"
+                        value={form.email}
+                        onChange={handleChange}
+                        required
+                    />
 
-                <select
-                    name="role"
-                    value={form.role}
-                    onChange={handleChange}
-                >
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Password"
+                        value={form.password}
+                        onChange={handleChange}
+                        required
+                    />
 
-                    <option value="employee">
-                        Employee
-                    </option>
+                    <select
+                        name="role"
+                        value={form.role}
+                        onChange={handleChange}
+                    >
+                        <option value="employee">Employee</option>
+                        <option value="security">Security</option>
+                    </select>
 
-                    <option value="security">
-                        Security
-                    </option>
+                    <input
+                        type="text"
+                        name="phone"
+                        placeholder="Phone Number"
+                        value={form.phone}
+                        onChange={handleChange}
+                        required
+                    />
 
-                </select>
+                    <input
+                        type="text"
+                        name="department"
+                        placeholder="Department"
+                        value={form.department}
+                        onChange={handleChange}
+                        required
+                    />
 
-                <input
-                    type="text"
-                    name="phone"
-                    placeholder="Phone Number"
-                    value={form.phone}
-                    onChange={handleChange}
-                    required
-                />
+                    <button className="primary-btn" type="submit">
+                        Create User
+                    </button>
 
-                <input
-                    type="text"
-                    name="department"
-                    placeholder="Department"
-                    value={form.department}
-                    onChange={handleChange}
-                    required
-                />
+                </form>
 
-                <button type="submit">
-                    Create User
-                </button>
+            </div>
 
-            </form>
+            <div className="table-container">
 
-            <h2>Employees & Security Staff</h2>
+                <table className="custom-table">
 
-            <table
-                border="1"
-                cellPadding="10"
-                style={{
-                    width: "100%",
-                    borderCollapse: "collapse"
-                }}
-            >
-
-                <thead>
-
-                    <tr>
-
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th>Department</th>
-                        <th>Phone</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    {users.length > 0 ? (
-
-                        users.map((user) => (
-
-                            <tr key={user._id}>
-
-                                <td>{user.name}</td>
-
-                                <td>{user.email}</td>
-
-                                <td>{user.role}</td>
-
-                                <td>{user.department}</td>
-
-                                <td>{user.phone}</td>
-
-                            </tr>
-
-                        ))
-
-                    ) : (
+                    <thead>
 
                         <tr>
 
-                            <td
-                                colSpan="5"
-                                style={{
-                                    textAlign: "center"
-                                }}
-                            >
-                                No Users Found
-                            </td>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Department</th>
+                            <th>Phone</th>
 
                         </tr>
 
-                    )}
+                    </thead>
 
-                </tbody>
+                    <tbody>
 
-            </table>
+                        {users.length > 0 ? (
+
+                            users.map((user) => (
+
+                                <tr key={user._id}>
+
+                                    <td>{user.name}</td>
+
+                                    <td>{user.email}</td>
+
+                                    <td>
+
+                                        <span className={`role-badge ${user.role}`}>
+
+                                            {user.role}
+
+                                        </span>
+
+                                    </td>
+
+                                    <td>{user.department}</td>
+
+                                    <td>{user.phone}</td>
+
+                                </tr>
+
+                            ))
+
+                        ) : (
+
+                            <tr>
+
+                                <td colSpan="5" style={{ textAlign: "center" }}>
+                                    No Users Found
+                                </td>
+
+                            </tr>
+
+                        )}
+
+                    </tbody>
+
+                </table>
+
+            </div>
 
         </DashboardLayout>
 

@@ -5,33 +5,19 @@ const DashboardLayout = ({ children }) => {
 
     return (
 
-        <div
-            style={{
-                display: "flex",
-                minHeight: "100vh"
-            }}
-        >
+        <div className="dashboard-layout">
 
             <Sidebar />
 
-            <div
-                style={{
-                    flex: 1,
-                    background: "#f5f5f5"
-                }}
-            >
+            <div className="dashboard-main">
 
                 <Navbar />
 
-                <div
-                    style={{
-                        padding: "30px"
-                    }}
-                >
+                <main className="dashboard-content">
 
                     {children}
 
-                </div>
+                </main>
 
             </div>
 

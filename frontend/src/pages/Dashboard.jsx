@@ -8,9 +8,7 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-
         fetchDashboard();
-
     }, []);
 
     const fetchDashboard = async () => {
@@ -18,7 +16,6 @@ const Dashboard = () => {
         try {
 
             const response = await api.get("/dashboard");
-
             setStats(response.data);
 
         } catch (error) {
@@ -36,9 +33,15 @@ const Dashboard = () => {
     if (loading) {
 
         return (
+
             <DashboardLayout>
-                <h2>Loading...</h2>
+
+                <div className="loading-container">
+                    <h2>Loading Dashboard...</h2>
+                </div>
+
             </DashboardLayout>
+
         );
 
     }
@@ -47,16 +50,15 @@ const Dashboard = () => {
 
         <DashboardLayout>
 
-            <h1>Dashboard</h1>
+            <div className="dashboard-header">
 
-            <div
-                style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
-                    gap: "20px",
-                    marginTop: "30px"
-                }}
-            >
+                <h1>Dashboard</h1>
+
+                <p>Visitor Pass Management System Overview</p>
+
+            </div>
+
+            <div className="dashboard-grid">
 
                 <Card title="Visitors" value={stats.totalVisitors} />
                 <Card title="Employees" value={stats.totalEmployees} />
@@ -79,19 +81,11 @@ const Card = ({ title, value }) => {
 
     return (
 
-        <div
-            style={{
-                background: "white",
-                borderRadius: "10px",
-                padding: "25px",
-                textAlign: "center",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.15)"
-            }}
-        >
+        <div className="dashboard-card">
 
             <h3>{title}</h3>
 
-            <h1>{value}</h1>
+            <h2>{value ?? 0}</h2>
 
         </div>
 
